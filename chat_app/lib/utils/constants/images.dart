@@ -1,0 +1,1 @@
+String ic_user='assets/images/img.png';
