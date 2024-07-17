@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
-
+   ChatScreen({super.key, required this.username,this.imageUrl='https://cdn.pixabay.com/photo/2021/07/19/04/36/woman-6477171_640.jpg'});
+final String username;
+String imageUrl;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,16 +31,16 @@ class ChatScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
+                     CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
-                          'https://cdn.pixabay.com/photo/2021/07/19/04/36/woman-6477171_640.jpg'),
+                      imageUrl),
                     ),
                     12.widthBox,
                     Expanded(
                       child: RichText(
-                          text: const TextSpan(
-                              text: 'Name\n',
+                          text:  TextSpan(
+                              text: '$username\n',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,

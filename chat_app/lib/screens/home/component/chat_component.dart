@@ -10,7 +10,7 @@ Widget chatsComponent(){
       physics: const BouncingScrollPhysics(),
       itemCount: 20,itemBuilder:(context, index) {
       return ListTile(
-        onTap:()=>Get.to(()=>const ChatScreen(),transition: Transition.downToUp,duration: const Duration(seconds: 1)),
+        onTap:()=>Get.to(()=> ChatScreen(username: 'Dummy Name',),transition: Transition.downToUp,duration: const Duration(seconds: 1)),
         leading: CircleAvatar(
           radius: 25,
           child:Image.asset(ic_user),

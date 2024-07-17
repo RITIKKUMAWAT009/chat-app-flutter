@@ -10,4 +10,13 @@ class StoreServices {
     }
     return null;
   }
+
+  static Stream<QuerySnapshot>? getAllUsers() {
+    try {
+      return db.collection(userCollection).snapshots();
+    } catch (e) {
+      print(e.toString());
+    }
+ return null;
+  }
 }
