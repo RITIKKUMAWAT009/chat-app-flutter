@@ -1,3 +1,5 @@
+import 'package:chat_app/controller/home_controller.dart';
+import 'package:chat_app/screens/home/home_screen.dart';
 import 'package:chat_app/screens/profile_screen/profile_screen.dart';
 import 'package:chat_app/utils/constants/strings.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../utils/constants/images.dart';
 
-Widget drawer() {
+Widget drawer({required HomeController controller}) {
   return Drawer(
     backgroundColor: Colors.grey.shade800,
     shape: const RoundedRectangleBorder(
@@ -28,7 +30,7 @@ Widget drawer() {
           radius: 45,
         ),
         10.heightBox,
-        'Username'.text.fontFamily('lato-bold').size(16).white.make(),
+        controller.sharedPreferences?.getStringList('user_details')![0].text.fontFamily('lato-bold').size(16).white.make()?? ''.text.make(),
         20.heightBox,
         const Divider(
           color: Colors.white,

@@ -99,7 +99,7 @@ class ComposeMessage extends StatelessWidget {
                                 ),
                               ),
                                 onPressed:(){
-                                Get.to(()=>ChatScreen(username:data['username'],imageUrl: data['imageUrl'],),transition: Transition.downToUp,duration: const Duration(seconds: 1));
+                                Get.to(()=>ChatScreen(),arguments:[data['id'],data['username'],data['imageUrl']] ,transition: Transition.downToUp,duration: const Duration(seconds: 1));
                                 },icon:Icon(Icons.message),label: "Message".text.make()),
                           )
                         ],

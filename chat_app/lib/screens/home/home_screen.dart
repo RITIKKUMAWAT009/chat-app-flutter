@@ -1,3 +1,4 @@
+import 'package:chat_app/controller/home_controller.dart';
 import 'package:chat_app/screens/home/component/appbar.dart';
 import 'package:chat_app/screens/home/component/drawer.dart';
 import 'package:chat_app/screens/home/component/tabbar.dart';
@@ -9,10 +10,11 @@ import 'package:velocity_x/velocity_x.dart';
 import '../compose_message/compose_message.dart';
 
 class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
+   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+    final controller=Get.put(HomeController());
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -41,7 +43,7 @@ class HomeScreen extends StatelessWidget {
         
             ],
           ),
-          drawer: drawer(),
+          drawer: drawer(controller:controller),
         ),
       ),
     );

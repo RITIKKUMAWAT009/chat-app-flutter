@@ -19,4 +19,12 @@ class StoreServices {
     }
  return null;
   }
+
+  static getAllChats(String chatId){
+   try{
+return db.collection(chatCollection).doc(chatId).collection('messages').orderBy('created_on',descending: false).snapshots();
+   }catch(e){
+     print(e.toString());
+   }
+  }
 }

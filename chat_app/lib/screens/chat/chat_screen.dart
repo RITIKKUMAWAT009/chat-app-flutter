@@ -1,13 +1,18 @@
+import 'package:chat_app/screens/chat/component/chat_bubble.dart';
+import 'package:chat_app/services/store_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../controller/chat_controller.dart';
+
 class ChatScreen extends StatelessWidget {
-   ChatScreen({super.key, required this.username,this.imageUrl='https://cdn.pixabay.com/photo/2021/07/19/04/36/woman-6477171_640.jpg'});
-final String username;
-String imageUrl;
+   ChatScreen({super.key,});
+
   @override
   Widget build(BuildContext context) {
+    final controller=Get.put(ChatController());
     return Scaffold(
         backgroundColor: Colors.grey.shade800,
         appBar: AppBar(
@@ -34,13 +39,13 @@ String imageUrl;
                      CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
-                      imageUrl),
+                      controller.friendImage),
                     ),
                     12.widthBox,
                     Expanded(
                       child: RichText(
                           text:  TextSpan(
-                              text: '$username\n',
+                              text: '${controller.friendName}\n',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -48,9 +53,9 @@ String imageUrl;
                               children: [
                             TextSpan(
                                 text: 'Last seen recently',
-                                style: TextStyle(
+                                style: TextStyle(height: 2,
                                     color: Colors.grey,
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.normal))
                           ])),
                     ),
@@ -72,78 +77,25 @@ String imageUrl;
                   ],
                 ),
                 20.heightBox,
-                Expanded(
-                  child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: 100,
-                      itemBuilder: (context, index) {
-                        return Directionality(
-                          textDirection: index.isEven
-                              ? TextDirection.ltr
-                              : TextDirection.rtl,
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: index.isEven
-                                      ? const NetworkImage(
-                                          'https://cdn.pixabay.com/photo/2021/07/19/04/36/woman-6477171_640.jpg')
-                                      : const NetworkImage(
-                                          'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-                                ),
-                                Expanded(
-                                    child: Directionality(
-                                  textDirection: TextDirection.ltr,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 8, right: 8),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: index.isEven
-                                            ? const BorderRadius.only(
-                                                // topLeft: Radius.circular(20),
-                                                bottomLeft: Radius.circular(20),
-                                                // bottomRight: Radius.circular(20),
-                                                topRight: Radius.circular(20),
-                                              )
-                                            : const BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                // bottomLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20)),
-                                        color: index.isEven
-                                            ? Colors.black.withOpacity(0.2)
-                                            : Colors.blue.withOpacity(0.3)),
-                                    child: Directionality(
-                                      textDirection: index.isEven
-                                          ? TextDirection.ltr
-                                          : TextDirection.rtl,
-                                      child:
-                                          'Message clblhfhldjhbhnvcv fhjhl x h hfvlslj jhdjh hv lils slhv  nklj jl f  k klk lfblk lklk lksvlk lksnlx  knvflkvnlk slsnkj flknkljblkslknbsie'
-                                              .text
-                                              .color(Colors.black)
-                                              .fontWeight(FontWeight.w400)
-                                              .make(),
-                                    ),
-                                  ),
-                                )),
-                                '11:00\nAM'
-                                    .text
-                                    .start
-                                    .color(Colors.black)
-                                    .size(6)
-                                    .make()
-                              ],
-                            ),
-                          ),
+                Obx(
+                    ()=> Expanded(
+                    child:controller.isLoading.value ? const Center(child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.cyanAccent),
+                    )) : StreamBuilder(
+                      stream: StoreServices.getAllChats(controller.chatId),
+                      builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        return ListView(
+                          children:snapshot.data!.docs.mapIndexed((currentValue, index) {
+                            var data = snapshot.data!.docs[index];
+                            return chatBubble(index,data);
+                          },).toList(),
                         );
-                      }),
+                      },
+                    )
+                  ),
                 ),
                 10.heightBox,
                 Container(
@@ -153,6 +105,7 @@ String imageUrl;
                       children: [
                         Expanded(
                             child: TextField(
+                              controller: controller.messageController,
                                 autocorrect: true,
                                 maxLines: 1,
                                 cursorHeight: 20,
@@ -191,7 +144,8 @@ String imageUrl;
                                 icon: const Icon(
                                   Icons.send,
                                   size: 25,
-                                )))
+                                ).onTap(() => controller.sendMessage(controller.messageController.text),)
+                            ))
                       ],
                     ))
               ],
